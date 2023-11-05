@@ -1,0 +1,62 @@
+// Code your testbench here
+// or browse Examples
+module top;
+  bit clk;
+  integer a;
+  bit start;
+  byte sr_data;
+    byte ds_data;
+  bit ack_nack;
+  
+  
+  initial begin
+    forever #5 clk =~clk;
+  end
+  
+  initial begin
+    a =0;
+    start = 1;
+    sr_data =1;
+    ack_nack = 0;
+   
+    #300 $finish;
+  end
+  
+  sequence beta;
+    (sr_data == ds_data);
+  endsequence
+  
+  property data_1 ;
+    beta;
+    endproperty
+  
+  always @(posedge clk) begin
+      sr_data = sr_data +1;
+     ds_data = sr_data;
+    
+    /*if(a%2 ==0) begin
+      $display("time = %t , even",$time);
+    
+    end else begin 
+      $error("time = %t , odd",$time);
+      end*/
+    a_1:assert property (data_1) begin
+      ack_nack = 1;
+      #2 ack_nack = 0;
+     
+    end
+      else  begin
+        ack_nack = 0;
+        
+        end
+  end
+      
+  
+  
+  initial begin 
+ 
+  $dumpfile("dump.vcd"); 
+    $dumpvars;
+  end
+  
+endmodule
